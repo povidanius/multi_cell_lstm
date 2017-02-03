@@ -34,7 +34,7 @@ display_step = 10
 # Network Parameters
 n_input = 28 # MNIST data input (img shape: 28*28)
 n_steps = 28 # timesteps
-n_hidden = 16 # hidden layer num of features
+n_hidden = 8 # hidden layer num of features
 n_classes = 10 # MNIST total classes (0-9 digits)
 
 
@@ -66,9 +66,9 @@ def RNN(x, weights, biases):
     x = tf.split(0, n_steps, x)
 
     # Define a lstm cell with tensorflow
-    #lstm_cell = rnn_cell.BasicLSTMCell(n_hidden, forget_bias=1.0)
+    lstm_cell = rnn_cell.BasicLSTMCell(n_hidden, forget_bias=1.0)
     #lstm_cell = MultiCellLSTMBaseline(n_hidden)
-    lstm_cell = MultiCellLSTM(n_hidden, 8)
+    #lstm_cell = MultiCellLSTM(n_hidden, 8)
     #lstm_cell = alstm(n_hidden, n_hidden, alpha = 1.0)
 
     # Get lstm cell output

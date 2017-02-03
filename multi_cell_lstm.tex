@@ -123,7 +123,7 @@
 \maketitle
 \section{Introduction}
 
-In this document we formulate new modification of long short-term memory.
+In this document we formulate new extension of long short-term memory. 
 
 \subsection{Conventional LSTM}
 Let $x_{t} \in \mathbb{R}^{D_{x}}$ be input vectors. LSTM state $(c_{t}, h_{t})^{T}$ is defined by:
@@ -140,11 +140,16 @@ h_{t} &=o_{t} \bullet \tanh(c_{t}), \qedhere
 \end{split},
 \end{align}
 
-Where $i_{t}$, $f_{t}$, $o_{t}$ are calles input, forget and output gates, $\tilde{c}_{t}$ - candidate cell vector, $c_{t}$ - cell vector, and $h_{t}$ - hidden state vector. All aforementioned variables are $D_{h}$- dimensional.
+Where $i_{t}$, $f_{t}$, $o_{t}$ are calles input, forget and output gates, $\tilde{c}_{t}$ - candidate cell vector, $c_{t}$ - cell vector, and $h_{t}$ - hidden state vector. All aforementioned variables are $D_{h}$- dimensional. By $\bullet$ we denote element-wise multiplication. Parameter count of LSTM is:
+\begin{equation}
+\label{eq:lstm_parameter_count}
+N =  4 \cdot D_{h} \cdot (D_{x}  + D_{h} + 1),
+\end{equation}
+and state is defined by $2 D_{h}$ variables.
+$c_{t}$ may be interpreted as internal memory of LSTM, while $h_{t}$ - represent its content, exposed by the output gate.  
 
 \subsection{Multi cell LSTM} 
-
-We suggest variant of LSTM with $D_{p}$ cells, assembled into $D_{h} 
+The internal memory of LSTM, $c_{t}$, shares the same dimension with $h_{t}$. However, according to our intuition $c_{t}$ should be able to store more information than $h_{t}$. We hypothesise, that extension of $c_{t}$ may increase effectiveness of LSTM approach. We suggest multi-cell variant of LSTM (MCLSTM) with $D_{p}$ cells, assembled into $D_{h} 
 \times D_{p}$ matrix $C_{t}$. Internal attention $p_{t}$ controls importance weights of individual cells (columns of $C_{t}$).
 
 \begin{align}
@@ -161,8 +166,22 @@ h_{t} &= \frac{1}{D_{p}} o_{t} \bullet (\tanh(C_{t}) 1) \in \mathbb{R}^{D_{h}}\q
 \end{split},
 \end{align}
 
+Parameter count of multi cell LSTM is:
+\begin{equation}
+\label{eq:multi_cell_lstm_parameter_count}
+N =  4 \cdot D_{h} \cdot (D_{x}  + D_{h} + 1) + D_{p}(D_{x} + D_{h} + 1),
+\end{equation}
+
+and state is defined by $D_{h}(D_{p} + 1)$ variables.
+
+The implementation of MCLSTM can be downloaded from:
+\url{https://git hub.com/povidanius/multi_cell_lstm}
 
 
+%\section{Conclusions}
+
+%The implementation of MCLSTM can be downloaded from:
+%\url{https://git hub.com/povidanius/multi_cell_lstm}
 
 %\begin{thebibliography}{1}
 
