@@ -114,11 +114,8 @@
 
 
 \author{Povilas Daniu\v{s}is}
-%\email{povilas.daniusis@gmail.com}  
 \author[1]{Povilas Daniu\v{s}is \thanks{povilas.daniusis@gmail.com}}
-%\author[1,2]{Linas Petkevi\v{c}ius \thanks{linas@neurotechnology.com}}
-%\affil[1]{Neurotechnology}
-%\affil[2]{Vilnius University}
+
 
 \title{Multi cell LSTM}
 
@@ -129,6 +126,8 @@
 In this document we formulate new modification of long short-term memory.
 
 \subsection{Conventional LSTM}
+Let $x_{t} \in \mathbb{R}^{D_{x}}$ be input vectors. LSTM state $(c_{t}, h_{t})^{T}$ is defined by:
+
 \begin{align}
 \begin{split}
 \label{LSTM}
@@ -137,9 +136,11 @@ f_{t} &=\sigma(W^{f}x_{t} + U^{f}h_{t-1} + b^{f})\\
 o_{t} &=\sigma(W^{o}x_{t} + U^{o}h_{t-1} + b^{o})\\
 \tilde{c}_{t} &= \tanh(W^{c}x_{t} + U^{c}h_{t-1} + b^{c})\\
 c_{t} &=f_{t} \bullet c_{t-1} + i_{t} \bullet \tilde{c}_{t}\\
-h_{t} &=o_{t} \bullet \tanh(c_{t})\qedhere
+h_{t} &=o_{t} \bullet \tanh(c_{t}), \qedhere
 \end{split},
 \end{align}
+
+Where $i_{t}$, $f_{t}$, $o_{t}$ are calles input, forget and output gates, $\tilde{c}_{t}$ - candidate cell vector, $c_{t}$ - cell vector, and $h_{t}$ - hidden state vector. All aforementioned variables are $D_{h}$- dimensional.
 
 \subsection{Multi cell LSTM} 
 
