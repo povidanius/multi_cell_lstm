@@ -27,7 +27,7 @@ handle 28 sequences of 28 steps for every sample.
 
 # Parameters
 learning_rate = 0.001
-training_iters = 1000000
+training_iters = 10000000
 batch_size = 256
 display_step = 10
 
@@ -68,8 +68,8 @@ def RNN(x, weights, biases):
     # Define a lstm cell with tensorflow
     #lstm_cell = rnn_cell.BasicLSTMCell(n_hidden, forget_bias=1.0)
     #lstm_cell = MultiCellLSTMBaseline(n_hidden)
-    #lstm_cell = MultiCellLSTM(n_hidden, 1)
-    lstm_cell = alstm(n_hidden, n_hidden, alpha = 1.0)
+    lstm_cell = MultiCellLSTM(n_hidden, 8)
+    #lstm_cell = alstm(n_hidden, n_hidden, alpha = 1.0)
 
     # Get lstm cell output
     outputs, states = rnn.rnn(lstm_cell, x, dtype=tf.float32)

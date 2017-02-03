@@ -66,7 +66,7 @@ class MultiCellLSTM(tf.nn.rnn_cell.RNNCell):
 				    new_c = tf.reshape(C_new + C_tilde, [-1, self._num_cells * self._num_units])					
 
 
-	  	    new_h = tf.nn.sigmoid(o) * self._activation(mean_c)
+	  	    new_h = o * self._activation(mean_c)
 	  	    new_state = tf.nn.rnn_cell.LSTMStateTuple(new_c, new_h)
 
         return new_h, new_state
