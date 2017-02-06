@@ -22,13 +22,14 @@ class MultiCellLSTM(tf.nn.rnn_cell.RNNCell):
     def output_size(self):
         return self._num_units
 
-
+    #TODO: add forget bias
+	
     def __call__(self, inputs, state, scope=None):
 
 	batch_size = inputs.get_shape()[0]
 	c, h = state	
 	cell_size = [-1, self._num_cells, self._num_units]
-	cell_size1 = [-1, self._num_units, self._num_cells]
+
 
         with tf.variable_scope(scope or type(self).__name__):
             
@@ -43,27 +44,29 @@ class MultiCellLSTM(tf.nn.rnn_cell.RNNCell):
             	    with tf.variable_scope("Candidate"):
 				    cc = self._activation(tf.nn.rnn_cell._linear([inputs, h], self._num_units, True))
 				   
-				    pp = tf.reshape(tf.tile(p, tf.pack([1, self._num_units])), cell_size1)
-				    pp = tf.transpose(pp, [0, 2, 1])	
+				    #pp = tf.reshape(tf.tile(p, tf.pack([1, self._num_units])), cell_size1)
+				    #pp = tf.transpose(pp, [0, 2, 1])	
+				    #pp = tf.reshape(tf.tile(p, tf.pack([1, self._num_units])), cell_size)
 
-				    #pp1 = tf.reshape(tf.tile(p, tf.pack([1, self._num_units])), cell_size)
-				    # should be equatl to pp 			   
+				    # should be equatl to pp 		
+				    pp0 = tf.reshape(p, [-1])
+				    pp1 = tf.tile(pp0, tf.pack([self._num_units]))		   
+				    pp2 = tf.reshape(pp1, [self._num_units, -1])
+				    pp3 = tf.transpose(pp2, [1, 0])
+				    pp =  tf.reshape(pp3, cell_size)	
+				    #print("pp {}".format(pp.get_shape()))
 				    
-
-			            C_new = tf.reshape(c, cell_size)
 				    ff = tf.reshape(tf.tile(f, tf.pack([1, self._num_cells])), cell_size)
-				    C_new = C_new * ff * pp
-
-				
-		
-
-			 	    C_tilde = tf.reshape(tf.tile(cc, tf.pack([1, self._num_cells])), cell_size)
 				    ii = tf.reshape(tf.tile(i, tf.pack([1, self._num_cells])), cell_size)
-				    C_tilde = C_tilde * ii * pp
+			 	    C_tilde = tf.reshape(tf.tile(cc, tf.pack([1, self._num_cells])), cell_size)
+				    C_old = tf.reshape(c, cell_size) 
 
+				    #print("ff {}".format(ff.get_shape()))
 
-				    mean_c = tf.reduce_sum(C_new + C_tilde , 1)
-				    new_c = tf.reshape(C_new + C_tilde, [-1, self._num_cells * self._num_units])					
+			            C_new = (C_old * ff   + C_tilde * ii) * pp 
+
+				    mean_c = tf.reduce_sum(C_new, 1)
+				    new_c = tf.reshape(C_new, [-1, self._num_cells * self._num_units])					
 
 
 	  	    new_h = o * self._activation(mean_c)

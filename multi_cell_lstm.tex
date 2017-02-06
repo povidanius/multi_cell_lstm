@@ -123,7 +123,7 @@
 \maketitle
 \section{Introduction}
 
-In this document we formulate new extension of long short-term memory. 
+In this document we formulate new extension of long short-term memory (LSTM) recurrent neural network. 
 
 \subsection{Conventional LSTM}
 Let $x_{t} \in \mathbb{R}^{D_{x}}$ be input vectors. LSTM state $(c_{t}, h_{t})^{T}$ is defined by:
@@ -169,13 +169,13 @@ h_{t} &= \frac{1}{D_{p}} o_{t} \bullet (\tanh(C_{t}) 1) \in \mathbb{R}^{D_{h}}\q
 Parameter count of multi cell LSTM is:
 \begin{equation}
 \label{eq:multi_cell_lstm_parameter_count}
-N =  4 \cdot D_{h} \cdot (D_{x}  + D_{h} + 1) + D_{p}(D_{x} + D_{h} + 1),
+N =  (4 \cdot D_{h}  + D_{p})\cdot (D_{x}  + D_{h} + 1),
 \end{equation}
 
 and state is defined by $D_{h}(D_{p} + 1)$ variables.
 
 The implementation of MCLSTM can be downloaded from:
-\url{https://git hub.com/povidanius/multi_cell_lstm}
+\url{https://github.com/povidanius/multi_cell_lstm}
 
 
 %\section{Conclusions}

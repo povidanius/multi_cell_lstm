@@ -34,7 +34,7 @@ display_step = 10
 # Network Parameters
 n_input = 28 # MNIST data input (img shape: 28*28)
 n_steps = 28 # timesteps
-n_hidden = 8 # hidden layer num of features
+n_hidden = 4 # hidden layer num of features
 n_classes = 10 # MNIST total classes (0-9 digits)
 
 
@@ -51,6 +51,20 @@ biases = {
     'out': tf.Variable(tf.random_normal([n_classes]))
 }
 
+def count_number_of_trainable_parameters():
+ total_parameters = 0
+ for variable in tf.trainable_variables():
+    # shape is an array of tf.Dimension
+    shape = variable.get_shape()
+    #print(shape)
+    #print(len(shape))
+    variable_parametes = 1
+    for dim in shape:      
+        variable_parametes *= dim.value
+    #print(variable_parametes)
+    total_parameters += variable_parametes
+ return total_parameters
+
 
 def RNN(x, weights, biases):
 
@@ -66,9 +80,9 @@ def RNN(x, weights, biases):
     x = tf.split(0, n_steps, x)
 
     # Define a lstm cell with tensorflow
-    lstm_cell = rnn_cell.BasicLSTMCell(n_hidden, forget_bias=1.0)
+    lstm_cell = rnn_cell.BasicLSTMCell(n_hidden, forget_bias=0.0)
     #lstm_cell = MultiCellLSTMBaseline(n_hidden)
-    #lstm_cell = MultiCellLSTM(n_hidden, 8)
+    #lstm_cell = MultiCellLSTM(n_hidden, 3)
     #lstm_cell = alstm(n_hidden, n_hidden, alpha = 1.0)
 
     # Get lstm cell output
@@ -80,6 +94,12 @@ def RNN(x, weights, biases):
     return tf.matmul(outputs[-1], weights['out']) + biases['out']
 
 pred = RNN(x, weights, biases)
+
+
+
+
+
+
 
 # Define loss and optimizer
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
@@ -119,5 +139,5 @@ with tf.Session() as sess:
     test_data = mnist.test.images[:test_len].reshape((-1, n_steps, n_input))
     test_label = mnist.test.labels[:test_len]
     print("Testing Accuracy:", sess.run(accuracy, feed_dict={x: test_data, y: test_label}))
-
+    print("number of trainable parameters is {}".format(count_number_of_trainable_parameters()))
 
