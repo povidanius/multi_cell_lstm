@@ -1,4 +1,5 @@
-# multi_cell_lstm
+# bilinear_rnn
 
-Experimental code, currently playing with idea to exploit cell with matrix structure.
+Trying to analyse what improvements could be achieved by using bilinear products in LSTM/GRU RNN.
 
+# bilinear_rnn
