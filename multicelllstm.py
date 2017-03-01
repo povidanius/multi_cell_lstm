@@ -23,6 +23,7 @@ class MultiCellLSTM(tf.nn.rnn_cell.RNNCell):
         return self._num_units
 
     #TODO: add forget bias
+    # p should be incremental?
 	
     def __call__(self, inputs, state, scope=None):
 
@@ -49,11 +50,12 @@ class MultiCellLSTM(tf.nn.rnn_cell.RNNCell):
 				    #pp = tf.reshape(tf.tile(p, tf.pack([1, self._num_units])), cell_size)
 
 				    # should be equatl to pp 		
-				    pp0 = tf.reshape(p, [-1])
-				    pp1 = tf.tile(pp0, tf.pack([self._num_units]))		   
-				    pp2 = tf.reshape(pp1, [self._num_units, -1])
-				    pp3 = tf.transpose(pp2, [1, 0])
-				    pp =  tf.reshape(pp3, cell_size)	
+				    #pp0 = tf.reshape(p, [-1])
+				    #pp1 = tf.tile(pp0, tf.pack([self._num_units]))		   
+				    #pp2 = tf.reshape(pp1, [self._num_units, -1])
+				    #pp3 = tf.transpose(pp2, [1, 0])
+				    #pp =  tf.reshape(pp3, cell_size)	
+				    
 				    #print("pp {}".format(pp.get_shape()))
 				    
 				    ff = tf.reshape(tf.tile(f, tf.pack([1, self._num_cells])), cell_size)
@@ -63,13 +65,20 @@ class MultiCellLSTM(tf.nn.rnn_cell.RNNCell):
 
 				    #print("ff {}".format(ff.get_shape()))
 
-			            C_new = (C_old * ff   + C_tilde * ii) * pp 
+			            C_new = C_old * ff   + C_tilde * ii #* pp #+ C_old * (tf.ones_like(pp) - pp) 
+				    C_new = tf.transpose(C_new, [0, 2, 1])
+				    print("C_new {}".format(C_new.get_shape()))
 
-				    mean_c = tf.reduce_sum(C_new, 1)
+				    mean_c = tf.reduce_sum(C_new, 2)
+				    #p1 = tf.expand_dims(p, 2)
+				    #mean_c1 = tf.batch_matmul(C_new, p1)
+
+				    mean_c = tf.batch_matmul(C_new, p)
 				    new_c = tf.reshape(C_new, [-1, self._num_cells * self._num_units])					
 
 
-	  	    new_h = o * self._activation(mean_c)
+	  	    new_h = o * self._activation(mean_c)  + (tf.ones_like(h) - o) * h
+
 	  	    new_state = tf.nn.rnn_cell.LSTMStateTuple(new_c, new_h)
 
         return new_h, new_state

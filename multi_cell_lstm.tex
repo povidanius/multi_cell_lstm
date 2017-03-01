@@ -177,6 +177,20 @@ and state is defined by $D_{h}(D_{p} + 1)$ variables.
 The implementation of MCLSTM can be downloaded from:
 \url{https://github.com/povidanius/multi_cell_lstm}
 
+\subsection{Kronecker LSTM}
+\begin{align}
+\begin{split}
+(I_{t},F_{t}, O_{t}) &=\sigma(X_{t} \otimes  W^{i,f,o} + H_{t-1} \otimes U^{i,f,o}  +  B^{i,f,o})\\
+\tilde{C}_{t} &=\tanh(X_{t} \otimes  W^{c} + H_{t-1} \otimes U^{c}  +  B^{c})\\
+C_{t} &= F_{t} \bullet C_{t-1} + I_{t} \bullet \tilde{C}_{t}\\
+H_{t} &= P(O_{t}\bullet \tanh(C_{t}))Q,
+\end{split}.
+\end{align}
+
+where $X_{t}: D_{1}^{X} \times D_{2}^{X}$, $W: D_{1}^{W} \times D_{2}^{W}$,$H_{t}: D_{1}^{H} \times D_{2}^{H}$,
+$$ IFOC: D_{1}^{X}D_{1}^{W} \times D_{2}^{X}D_{2}^{W} = D_{1}^{H}D_{1}^{U} \times D_{2}^{H}D_{2}^{U}  $$.
+\end{document}
+
 
 %\section{Conclusions}
 
